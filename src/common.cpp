@@ -21,7 +21,7 @@ MonocularMode::MonocularMode() :Node("mono_node_cpp")
     
     //* Find path to home directory
     homeDir = getenv("HOME");
-    packagePath = "ros2_ws/src/ros2_orb_slam3/"; // !HARDCODED, change it as necessary
+    packagePath = "orb_slam3/src/ros2_orb_slam3/"; // !HARDCODED, change it as necessary
     // std::cout<<"Home: "<<homeDir<<std::endl;
     
     // std::cout<<"VLSAM NODE STARTED\n\n";
@@ -135,7 +135,7 @@ void MonocularMode::initializeVSLAM(std::string& configString){
     //* Build .yaml`s file path
     
     settingsFilePath = settingsFilePath.append(configString);
-    settingsFilePath = settingsFilePath.append(".yaml"); // Example ros2_ws/src/orb_slam3_ros2/orb_slam3/config/Monocular/TUM2.yaml
+    settingsFilePath = settingsFilePath.append(".yaml"); // Example orb_slam3/src/orb_slam3_ros2/orb_slam3/config/Monocular/TUM2.yaml
 
     RCLCPP_INFO(this->get_logger(), "Path to settings file: %s", settingsFilePath.c_str());
     

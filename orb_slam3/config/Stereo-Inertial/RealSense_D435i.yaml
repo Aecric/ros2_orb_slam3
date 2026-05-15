@@ -1,0 +1,87 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters (IR stereo pair on D435i, 640x480 @ 30fps).
+# Intrinsics from /camera/cam_head/infra1/camera_info; baseline from
+# /camera/cam_head/extrinsics/depth_to_infra2.
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+
+# IR images are already rectified by the RealSense ASIC, so we mark the camera as Rectified.
+# With this mode, Settings::readCamera1Camera2 reads Stereo.b directly (no Stereo.T_c1_c2 needed).
+Camera.type: "Rectified"
+
+# Left IR (infra1)
+Camera1.fx: 390.4195556640625
+Camera1.fy: 390.4195556640625
+Camera1.cx: 320.8166198730469
+Camera1.cy: 245.85488891601562
+
+# Right IR (infra2) - identical for a rectified pair
+Camera2.fx: 390.4195556640625
+Camera2.fy: 390.4195556640625
+Camera2.cx: 320.8166198730469
+Camera2.cy: 245.85488891601562
+
+# Stereo baseline between IR1 and IR2 (metres). Measured from depth_to_infra2 translation.
+Stereo.b: 0.050008513033390045
+
+Camera.width: 640
+Camera.height: 480
+Camera.fps: 30
+
+# IR images are mono8 (single-channel grayscale); flag is irrelevant but kept for completeness.
+Camera.RGB: 1
+
+# Close/Far threshold (multiple of baseline). 40 * 0.05 ~= 2 m.
+Stereo.ThDepth: 40.0
+
+#--------------------------------------------------------------------------------------------
+# IMU Parameters (BMI055 inside D435i).
+# These are conservative published values that work for most D435i units. Tune with
+# kalibr_allan if you want better convergence.
+#--------------------------------------------------------------------------------------------
+IMU.NoiseGyro: 1.7e-4        # rad/s/sqrt(Hz)
+IMU.NoiseAcc:  2.0e-3        # m/s^2/sqrt(Hz)
+IMU.GyroWalk:  1.9393e-5
+IMU.AccWalk:   3.0e-3
+IMU.Frequency: 200.0         # matches gyro_fps=200 / unite_imu_method=2 (must be float for parser)
+
+# T_b_c1 — transforms a point from the LEFT IR optical frame (c1) to the IMU body frame (b):
+#     P_b = T_b_c1 * P_c1
+# Built directly from realsense extrinsic depth_to_accel (RealSense convention is also
+# "P_target = R*P_source + t", and on D435 the depth optical origin coincides with IR1).
+IMU.T_b_c1: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: f
+   data: [ 1.0, 0.0, 0.0, -0.005520000122487545,
+           0.0, 1.0, 0.0,  0.005100000184029341,
+           0.0, 0.0, 1.0,  0.011739999987185001,
+           0.0, 0.0, 0.0,  1.0 ]
+
+# Keep IMU<->vision tightly coupled even when tracking is lost.
+IMU.InsertKFsWhenLost: 1
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+ORBextractor.nFeatures: 1250
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0

@@ -25,6 +25,7 @@ find_package(OpenCV 4.6 REQUIRED) # In Ubuntu 24.04 4.6 or greater is required
 find_package(Eigen3 3.3.0 REQUIRED) # Matched with Sophus
 find_package(Pangolin REQUIRED)
 find_package(image_transport REQUIRED)
+find_package(message_filters REQUIRED)
 
 # Header file locations [C++ node]
 include_directories(include) # Add .hpp, .h files from include/ros2_orb_slam3
@@ -57,6 +58,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   # your_custom_msg_interface
   cv_bridge
   image_transport
+  message_filters
   OpenCV
   Eigen3
   Pangolin
@@ -158,6 +160,32 @@ ament_target_dependencies(mono_node_cpp
 target_link_libraries(mono_node_cpp PUBLIC orb_slam3_lib) # Link a node with the internal shared library
 
 
+# RGB-D node (Intel RealSense D435 / D435i)
+add_executable(rgbd_node_cpp
+  src/rgbd_example.cpp
+  src/rgbd_common.cpp
+)
+
+ament_target_dependencies(rgbd_node_cpp
+  PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS}
+)
+
+target_link_libraries(rgbd_node_cpp PUBLIC orb_slam3_lib)
+
+
+# IMU_STEREO node (Intel RealSense D435i)
+add_executable(imu_stereo_node_cpp
+  src/imu_stereo_example.cpp
+  src/imu_stereo_common.cpp
+)
+
+ament_target_dependencies(imu_stereo_node_cpp
+  PUBLIC ${THIS_PACKAGE_INCLUDE_DEPENDS}
+)
+
+target_link_libraries(imu_stereo_node_cpp PUBLIC orb_slam3_lib)
+
+
 # Install all the header files in package/package/include
 install (DIRECTORY include/ 
         DESTINATION include
@@ -173,7 +201,7 @@ install(DIRECTORY
  )
 
 # Install our node and library
-install(TARGETS mono_node_cpp orb_slam3_lib DBoW2 g2o
+install(TARGETS mono_node_cpp rgbd_node_cpp imu_stereo_node_cpp orb_slam3_lib DBoW2 g2o
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}

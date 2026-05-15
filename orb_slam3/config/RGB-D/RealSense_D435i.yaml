@@ -1,0 +1,65 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters
+# Intrinsics taken from /camera/cam_head/color/camera_info (D435i, 640x480 @ 30fps).
+# The RealSense driver outputs rectified images already, so all distortion terms are zero.
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+
+Camera.type: "PinHole"
+
+Camera1.fx: 604.5931396484375
+Camera1.fy: 604.1112060546875
+Camera1.cx: 326.5229797363281
+Camera1.cy: 248.54183959960938
+
+Camera1.k1: 0.0
+Camera1.k2: 0.0
+Camera1.p1: 0.0
+Camera1.p2: 0.0
+
+Camera.width: 640
+Camera.height: 480
+Camera.fps: 30
+
+# Image arrives as bgr8 from cv_bridge (we explicitly request that encoding in the node).
+Camera.RGB: 0
+
+#--------------------------------------------------------------------------------------------
+# RGB-D / Stereo parameters
+#--------------------------------------------------------------------------------------------
+# IR-projector baseline of the D435 IR pair (metres). Used to convert depth into a virtual
+# right-image disparity. Settings.cc reads Stereo.b and computes bf = b * fx internally.
+Stereo.b: 0.0499585
+
+# Close/Far threshold expressed as a multiple of the baseline (40 * b ~= 2 m).
+# Map points whose depth exceeds this are flagged as "far" and used only for orientation.
+Stereo.ThDepth: 40.0
+
+# aligned_depth_to_color is uint16 in millimetres. ORB-SLAM3 inverts this value internally,
+# so 1000.0 here means "divide raw pixel values by 1000 to get metres".
+RGBD.DepthMapFactor: 1000.0
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+ORBextractor.nFeatures: 1250
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0
